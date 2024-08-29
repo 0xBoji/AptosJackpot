@@ -3,16 +3,30 @@ module jackpot_address::jackpot {
     use 0x1::coin::{Self, Coin};
     use 0x1::aptos_coin::AptosCoin;
     use 0x1::randomness;
-    use 0x1::object::{Self, Object, ObjectGroup};
+    use 0x1::object::{Self, Object};
+    use 0x1::event;
 
     struct Jackpot has key {
         value: Coin<AptosCoin>,
         bets: u64
     }
 
-    #[resource_group_member(group = ObjectGroup)]
-    struct ObjectController has key {
-        extend_ref: object::ExtendRef,
+    #[event]
+    struct Lose has store, drop {
+        by: address,
+        amount: u64
+    }
+
+    #[event]
+    struct Win has store, drop {
+        by: address,
+        amount: u64
+    }
+
+    #[view]
+    public fun get_bet_amount(jackpot: Object<Jackpot>): u64 acquires Jackpot {
+        let constructor_ref = object::object_address<Jackpot>(&jackpot);
+        borrow_global<Jackpot>(constructor_ref).bets
     }
 
     #[view]
@@ -23,7 +37,12 @@ module jackpot_address::jackpot {
         coin::value(&jackpot.value) / 10 * 3
     }
 
-    public entry fun initialize(owner: &signer){
+    #[view]
+    public fun get_max_bet_amount(jackpot: Object<Jackpot>): u64 acquires Jackpot {
+        get_jackpot_amount(jackpot) / 10
+    }
+
+    public entry fun initialize() {
         let constructor_ref = object::create_object(@jackpot_address);
         let object_signer = object::generate_signer(&constructor_ref);
 
@@ -32,9 +51,6 @@ module jackpot_address::jackpot {
             value: zero_balance,
             bets: 0
         });
-
-        let extend_ref = object::generate_extend_ref(&constructor_ref);
-        move_to(&object_signer, ObjectController { extend_ref });
     }
 
     public entry fun deposit(user: &signer, jackpot: Object<Jackpot>, amount: u64) acquires Jackpot {
@@ -48,22 +64,32 @@ module jackpot_address::jackpot {
     #[randomness]
     entry fun play(player: &signer, jackpot: Object<Jackpot>, amount: u64) acquires Jackpot {
         let player_address = signer::address_of(player);
-        let player_acc_balance:u64 = coin::balance<AptosCoin>(player_address);
-
-        assert!(amount <= player_acc_balance, 2);
+        let player_balance:u64 = coin::balance<AptosCoin>(player_address);
+        assert!(amount <= player_balance, 2);
         assert!(amount >= 1, 3);
+
         let object_address = object::object_address(&jackpot);
         let jackpot = borrow_global_mut<Jackpot>(object_address);
         let jackpot_amount = coin::value(&jackpot.value) / 10 * 3;
+        jackpot.bets = jackpot.bets + 1;
         assert!(amount <= jackpot_amount / 10, 4);
-
-        if ((randomness::u64_integer() % jackpot_amount) < (amount / 2)) {
-            let coin_to_send = coin::extract<AptosCoin>(&mut jackpot.value, jackpot_amount);
-            coin::deposit<AptosCoin>(player_address, coin_to_send);
-            return ()
-        };
 
         let payment = coin::withdraw<AptosCoin>(player, amount);
         coin::merge<AptosCoin>(&mut jackpot.value, payment);
+
+        if ((randomness::u64_integer() % jackpot_amount) * 2 < amount) {
+            let coin_to_send = coin::extract<AptosCoin>(&mut jackpot.value, jackpot_amount + amount);
+            coin::deposit<AptosCoin>(player_address, coin_to_send);
+
+            event::emit(Win {
+                by: player_address,
+                amount: jackpot_amount + amount
+            });
+        } else {
+            event::emit(Lose {
+                by: player_address,
+                amount: amount
+            });
+        };
     }
 }
