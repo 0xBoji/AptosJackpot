@@ -10,7 +10,7 @@ const initializeApp = async () => {
     await new FontFaceObserver('Pixelify Sans').load();
     el.appendChild(app.canvas);
 
-    jackpotContainer(app);
+    await jackpotContainer(app);
 };
 
 if (!window.__PIXILOADED) {

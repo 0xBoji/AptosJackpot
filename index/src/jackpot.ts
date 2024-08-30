@@ -1,9 +1,9 @@
 import * as PIXI from 'pixi.js';
 import titleContainer from './title';
 
-export default (app: PIXI.Application) => {
+export default async (app: PIXI.Application) => {
     const jackpotContainer = new PIXI.Container();
-    jackpotContainer.addChild(titleContainer);
+    jackpotContainer.addChild(await titleContainer('Aptos Jackpot'));
 
     app.stage.addChild(jackpotContainer);
 };
