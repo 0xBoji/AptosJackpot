@@ -6,7 +6,7 @@ const app = new PIXI.Application();
 const el: HTMLDivElement = document.querySelector('.wrapper') as HTMLDivElement;
 
 const initializeApp = async () => {
-    await app.init({ background: '#1099bb', resizeTo: el });
+    await app.init({ background: '#1099bb', width: 500 });
     await new FontFaceObserver('Pixelify Sans').load();
     el.appendChild(app.canvas);
 

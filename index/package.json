@@ -29,6 +29,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "@pixi/ui": "^2.1.5",
     "fontfaceobserver": "^2.3.0",
     "pixi.js": "^8.3.4"
   }

@@ -3,7 +3,6 @@ import divider_png from './assets/fantasy_ui/divider/divider-005.png';
 
 const titleContainer = async (displayText: string) => {
     const container = new PIXI.Container();
-    container.width = 500;
     container.y = 40;
 
     const divider = await PIXI.Assets.load(divider_png);
@@ -20,18 +19,19 @@ const titleContainer = async (displayText: string) => {
         style: {
             fontFamily: 'Pixelify Sans',
             fill: '#fff',
+            align: 'center',
+            fontSize: 32,
         },
     });
-    text.y = -13;
-    text.x = 130;
-    dividerLeft.anchor = 0.5;
+    text.x = 250;
+    text.anchor = 0.5;
     container.addChild(text);
 
     const dividerRight = new PIXI.Sprite(divider);
     dividerRight.height = 18;
     dividerRight.width = 90;
     dividerRight.anchor = 0.5;
-    dividerRight.x = 410;
+    dividerRight.x = 455;
     dividerRight.rotation = Math.PI;
     container.addChild(dividerRight);
 
