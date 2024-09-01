@@ -1,9 +1,9 @@
 <script>
-	import JackpotAmount from '$lib/JackpotAmount.svelte';
+	import Bet from '$lib/Bet.svelte';
 </script>
 
 <div class="wrapper">
-	<JackpotAmount />
+	<Bet />
 </div>
 
 <style lang="scss">
