@@ -1,20 +1,54 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import JackpotAmount from './JackpotAmount.svelte';
+	import createClient from './web3/createClient';
+	import getJackpotAmount from './web3/getJackpotAmount';
+	import toLocaleString from './scripts/toLocaleString';
+	import parseNumericInput from './scripts/parseNumericInput';
+
+	let value = '';
+	let betAmount = 0;
+	let jackpotAmount = 0;
+	$: jackpotAmountReadable = jackpotAmount / 10 ** 8;
+	$: maxBet = jackpotAmount / 10;
+	$: maxBetReadable = jackpotAmountReadable / 10;
+
+	onMount(() => {
+		const aptos = createClient();
+		getJackpotAmount(aptos).then((am) => (jackpotAmount = am));
+
+		const intervalId = setInterval(
+			() => getJackpotAmount(aptos).then((am) => (jackpotAmount = am)),
+			5000
+		);
+		return () => clearInterval(intervalId);
+	});
+
+	const handle = () => {
+		value = parseNumericInput(value, 8);
+		betAmount = parseFloat(value);
+
+		if (betAmount > maxBetReadable) {
+			betAmount = maxBet;
+			value = maxBetReadable.toString();
+			handle();
+		}
+	};
 </script>
 
 <div class="bet">
 	<div class="card">
 		<div class="jackpot">
-			<JackpotAmount />
+			<JackpotAmount {jackpotAmountReadable} />
 		</div>
 
 		<div class="display">
 			<div>
-				<p>Bet Amount</p>
+				<p>Bet Amount (APTOS)</p>
 			</div>
 
 			<div>
-				<input type="text" />
+				<input type="text" on:keyup={handle} bind:value placeholder="Ex. 5.55" />
 			</div>
 		</div>
 
@@ -25,7 +59,13 @@
 
 			<div>
 				<p>
-					<span class="number">0.05</span>
+					<span class="number">
+						{#if betAmount == 0 || isNaN(betAmount)}
+							-
+						{:else}
+							{toLocaleString((betAmount / (jackpotAmountReadable * 2)) * 100, 3)}
+						{/if}
+					</span>
 					%
 				</p>
 			</div>
@@ -38,7 +78,7 @@
 
 			<div>
 				<p>
-					<span class="number">0.5</span>
+					<span class="number">{toLocaleString(maxBetReadable)}</span>
 					APTOS
 				</p>
 			</div>
@@ -75,6 +115,7 @@
 		height: 25px;
 		font-size: 18px;
 		font-family: 'Tiny5', sans-serif;
+		text-align: right;
 	}
 
 	button {

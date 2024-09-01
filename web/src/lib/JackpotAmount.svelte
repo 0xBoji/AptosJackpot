@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import getPrice from './scripts/getPrice';
+	import getPrice from '$lib/scripts/getPrice';
+	import toLocaleString from './scripts/toLocaleString';
 
 	let aptosPrice = 0;
-	let jackpotAmount = 5789436345;
-	$: jackpotAmountReadable = jackpotAmount / 10 ** 8;
+	export let jackpotAmountReadable = 0;
+	$: jackpotAmountUsd = jackpotAmountReadable * aptosPrice;
 
 	onMount(() => {
 		(async () => {
@@ -15,11 +16,11 @@
 
 <p class="foretitle">Jackpot</p>
 <h1>
-	<span class="number">{jackpotAmountReadable.toLocaleString()}</span>
+	<span class="number">{toLocaleString(jackpotAmountReadable)}</span>
 	APTOS
 </h1>
 <p>
-	≈ {(366.76).toLocaleString()} USD
+	≈ {jackpotAmountUsd.toLocaleString()} USD
 </p>
 
 <style>
