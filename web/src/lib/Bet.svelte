@@ -1,8 +1,5 @@
 <script lang="ts">
 	import JackpotAmount from './JackpotAmount.svelte';
-
-	let balanceAmount = 58493869;
-	$: balanceAmountReadable = balanceAmount / 10 ** 8;
 </script>
 
 <div class="bet">
@@ -11,23 +8,40 @@
 			<JackpotAmount />
 		</div>
 
-		<p>
-			Balance:
-			<span class="number">{balanceAmountReadable.toLocaleString()}</span>
-			APTOS
-		</p>
+		<div class="display">
+			<div>
+				<p>Bet Amount</p>
+			</div>
 
-		<input type="text" />
-		<div class="beneath">
-			<p>
-				Max:
-				<span class="number">5435.54354355</span>
-				APTOS
-			</p>
-			<p>
-				<span class="number">0.05</span>
-				% chance
-			</p>
+			<div>
+				<input type="text" />
+			</div>
+		</div>
+
+		<div class="display">
+			<div>
+				<p>Win Chance</p>
+			</div>
+
+			<div>
+				<p>
+					<span class="number">0.05</span>
+					%
+				</p>
+			</div>
+		</div>
+
+		<div class="display">
+			<div>
+				<p>Max Bet</p>
+			</div>
+
+			<div>
+				<p>
+					<span class="number">0.5</span>
+					APTOS
+				</p>
+			</div>
 		</div>
 
 		<button> Bet </button>
@@ -59,27 +73,33 @@
 	input {
 		width: 100%;
 		height: 30px;
-		margin-top: 20px;
 		font-size: 20px;
 		font-family: 'Tiny5', sans-serif;
-	}
-
-	div.beneath {
-		display: flex;
-		justify-content: space-between;
-
-		& > * {
-			font-size: 13px;
-		}
 	}
 
 	button {
 		background: #39ff14;
 		width: 100%;
-		max-width: 50px;
 		height: 30px;
 		border: 0;
-		margin-top: 30px;
+		margin-top: 20px;
 		cursor: pointer;
+		font-family: 'Pixelify Sans', system-ui;
+		box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+	}
+
+	div.display {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		height: 30px;
+
+		& > div:last-child {
+			flex: 1;
+
+			p {
+				text-align: right;
+			}
+		}
 	}
 </style>
