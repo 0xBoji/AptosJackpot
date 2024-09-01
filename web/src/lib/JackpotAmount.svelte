@@ -1,6 +1,16 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import getPrice from './scripts/getPrice';
+
+	let aptosPrice = 0;
 	let jackpotAmount = 5789436345;
 	$: jackpotAmountReadable = jackpotAmount / 10 ** 8;
+
+	onMount(() => {
+		(async () => {
+			aptosPrice = await getPrice();
+		})();
+	});
 </script>
 
 <p class="foretitle">Jackpot</p>

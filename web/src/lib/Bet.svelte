@@ -72,8 +72,8 @@
 
 	input {
 		width: 100%;
-		height: 30px;
-		font-size: 20px;
+		height: 25px;
+		font-size: 18px;
 		font-family: 'Tiny5', sans-serif;
 	}
 
@@ -91,7 +91,7 @@
 	div.display {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
+		gap: 2rem;
 		height: 30px;
 
 		& > div:last-child {
