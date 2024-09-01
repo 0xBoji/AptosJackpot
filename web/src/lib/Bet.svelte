@@ -5,6 +5,7 @@
 	import getJackpotAmount from './web3/getJackpotAmount';
 	import toLocaleString from './scripts/toLocaleString';
 	import parseNumericInput from './scripts/parseNumericInput';
+	import Wallet from './web3/Wallet.svelte';
 
 	let value = '';
 	let betAmount = 0;
@@ -84,7 +85,9 @@
 			</div>
 		</div>
 
-		<button> Bet </button>
+		<Wallet>
+			<button> Bet </button>
+		</Wallet>
 	</div>
 </div>
 
