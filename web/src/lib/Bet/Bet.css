@@ -1,0 +1,54 @@
+div.bet * {
+  margin: 0;
+}
+
+div.jackpot {
+  padding-bottom: 40px;
+}
+
+.bet {
+  padding-top: 40px;
+}
+
+div.card {
+  background: #007bff;
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+input {
+  width: 100%;
+  height: 25px;
+  font-size: 18px;
+  font-family: 'Tiny5', sans-serif;
+  text-align: right;
+}
+
+button {
+  background: #39ff14;
+  width: 100%;
+  height: 30px;
+  border: 0;
+  margin-top: 20px;
+  cursor: pointer;
+  font-family: 'Pixelify Sans', system-ui;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+div.display {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 30px;
+}
+
+div.display > div:last-child {
+  flex: 1;
+}
+
+div.display > div:last-child p {
+  text-align: right;
+}

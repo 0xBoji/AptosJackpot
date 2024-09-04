@@ -1,0 +1,13 @@
+div.jackpot * {
+  text-align: center;
+  margin: 0;
+}
+
+div.jackpot .foretitle {
+  font-size: 1.6rem;
+}
+
+div.jackpot h1 {
+  color: #ffd700;
+  font-size: 2.3rem;
+}
