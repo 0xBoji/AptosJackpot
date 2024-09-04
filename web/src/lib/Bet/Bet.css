@@ -17,6 +17,7 @@ div.card {
   margin: 0 auto;
   padding: 1rem;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  margin-top: 40px;
 }
 
 input {
@@ -63,4 +64,21 @@ div.display > div:last-child p {
 
 p.result {
   margin-top: 1rem;
+}
+
+div.win {
+  margin: 3px 0;
+}
+
+div.win a {
+  color: #fff;
+  text-decoration: none;
+}
+
+div.win a span.who {
+  font-weight: 600;
+}
+
+div.win a span.number {
+  font-weight: 700;
 }

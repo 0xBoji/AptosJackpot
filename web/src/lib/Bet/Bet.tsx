@@ -11,6 +11,7 @@ import '@aptos-labs/wallet-adapter-ant-design/dist/index.css';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import { JACKPOT_OBJECT, MODULE_ADDRESS, MODULE_NAME } from '../web3/constants';
 import hasWon from '../scripts/hasWon';
+import addressReadable from '../scripts/addressReadable';
 
 type WinEvent = {
   who: string;
@@ -146,7 +147,7 @@ function Bet() {
               <span className="number">
                 {(betAmount == 0 || isNaN(betAmount)) && <>-</>}
                 {betAmount != 0 && !isNaN(betAmount) && (
-                  <>{toLocaleString((betAmount / (jackpotAmount * 6)) * 100, 3)}</>
+                  <>{toLocaleString((betAmount / (jackpotAmount * 10)) * 100, 3)}</>
                 )}
               </span>
               %
@@ -171,6 +172,21 @@ function Bet() {
 
         {result !== null && <p className="result">{result}</p>}
       </div>
+
+      {lastWins.length > 0 && (
+        <div className="card">
+          <h2>Last {lastWins.length} wins</h2>
+
+          {lastWins.map((win) => (
+            <div className="win">
+              <a href={`https://explorer.aptoslabs.com/account/${win.who}?network=mainnet`} target="_blank">
+                <span className="who">{addressReadable(win.who)}</span> won{' '}
+                <span className="number">{toLocaleString(win.amount / 10 ** 8)}</span> APTOS
+              </a>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
