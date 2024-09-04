@@ -87,10 +87,6 @@ function Bet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [betAmount, maxBet]);
 
-  useEffect(() => {
-    console.log(lastWins);
-  }, [lastWins]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(parseNumericInput(e.target.value, 8));
   };
@@ -116,7 +112,7 @@ function Bet() {
         }
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
