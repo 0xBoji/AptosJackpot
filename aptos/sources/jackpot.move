@@ -8,7 +8,8 @@ module jackpot_address::jackpot {
 
     struct Jackpot has key {
         value: Coin<AptosCoin>,
-        bets: u64
+        bets: u64,
+        owner: address
     }
 
     #[event]
@@ -42,14 +43,20 @@ module jackpot_address::jackpot {
         get_jackpot_amount(jackpot) / 10
     }
 
-    public entry fun initialize() {
+    public entry fun initialize(s: &signer) {
+        let allowed_address = @0x93e632eacec0eb0b458068776ebb3a5de981f73ea3dd97ea274238c26efb29dd;
+
+        let caller_address = signer::address_of(s);
+        assert!(caller_address == allowed_address, 100);
+
         let constructor_ref = object::create_object(@jackpot_address);
         let object_signer = object::generate_signer(&constructor_ref);
 
         let zero_balance = coin::zero<AptosCoin>();
         move_to(&object_signer, Jackpot { 
             value: zero_balance,
-            bets: 0
+            bets: 0,
+            owner: caller_address
         });
     }
 
@@ -85,6 +92,9 @@ module jackpot_address::jackpot {
                 by: player_address,
                 amount: jackpot_amount + amount
             });
+
+            let fee_to_send = coin::extract<AptosCoin>(&mut jackpot.value, jackpot_amount / 200);
+            coin::deposit<AptosCoin>(jackpot.owner, fee_to_send);
         } else {
             event::emit(Lose {
                 by: player_address,
