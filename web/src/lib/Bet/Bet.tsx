@@ -77,11 +77,10 @@ function Bet() {
   }, [maxBet]);
 
   useEffect(() => {
-    setBetAmount(parseFloat(value) * 10 ** 8);
+    setBetAmount(parseInt(`${parseFloat(value) * 10 ** 8}`));
   }, [value]);
 
   useEffect(() => {
-    console.log(maxBetReadable);
     if (betAmount > maxBet) {
       setValue(maxBetReadable.toString());
     }
@@ -97,6 +96,8 @@ function Bet() {
   };
 
   const bet = async () => {
+    setResult(null);
+
     const transaction: InputGenerateTransactionPayloadData = {
       function: `${MODULE_ADDRESS}::${MODULE_NAME}::play`,
       functionArguments: [JACKPOT_OBJECT, betAmount],
@@ -105,7 +106,6 @@ function Bet() {
     try {
       const response = await signAndSubmitTransaction({ data: transaction });
       const result = await aptosClient?.waitForTransaction({ transactionHash: response.hash });
-      console.log(result);
 
       if (result) {
         getJackpot();
