@@ -12,7 +12,7 @@ const countLeadingZeros = (str: string) => {
   return count;
 };
 
-const parseNumericInput = (input: string, decimals: number) => {
+const parseNumericInputInner = (input: string, decimals: number) => {
   input = input.replace(/,/g, '.');
   const dotCount = input.split('.').length - 1;
 
@@ -54,6 +54,14 @@ const parseNumericInput = (input: string, decimals: number) => {
   }
 
   return '';
+};
+
+const parseNumericInput = (input: string, decimals: number) => {
+  const parts = parseNumericInputInner(input, decimals).split('.');
+  if (parts.length === 2 && parts[1].length > decimals) {
+    parts[1] = parts[1].substring(0, decimals);
+  }
+  return parts.join('.');
 };
 
 export default parseNumericInput;

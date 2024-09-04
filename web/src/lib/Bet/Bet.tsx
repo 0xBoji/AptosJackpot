@@ -12,6 +12,11 @@ import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import { JACKPOT_OBJECT, MODULE_ADDRESS, MODULE_NAME } from '../web3/constants';
 import hasWon from '../scripts/hasWon';
 
+type WinEvent = {
+  who: string;
+  amount: number;
+};
+
 function Bet() {
   const [aptosClient, setAptosClient] = useState<Aptos>();
   const [jackpotAmount, setJackpotAmount] = useState(0);
@@ -22,12 +27,31 @@ function Bet() {
   const [betAmount, setBetAmount] = useState(0);
   const { account, signAndSubmitTransaction } = useWallet();
   const [result, setResult] = useState<null | string>(null);
+  const [lastWins, setLastWins] = useState<WinEvent[]>([]);
 
   useEffect(() => {
     setAptosClient(createClient());
   }, []);
 
-  const getJackpot = () => aptosClient && getJackpotAmount(aptosClient).then((amount) => setJackpotAmount(amount));
+  const getJackpot = () => {
+    if (aptosClient) {
+      getJackpotAmount(aptosClient).then((amount) => setJackpotAmount(amount));
+
+      aptosClient
+        .getModuleEventsByEventType({
+          eventType: `${MODULE_ADDRESS}::${MODULE_NAME}::Win`,
+          options: {
+            limit: 3,
+            orderBy: [
+              {
+                transaction_block_height: 'desc',
+              },
+            ],
+          },
+        })
+        .then((events) => setLastWins(events.map((e) => ({ who: e.data.by, amount: parseInt(e.data.amount) }))));
+    }
+  };
 
   useEffect(() => {
     if (aptosClient) {
@@ -39,24 +63,33 @@ function Bet() {
 
       return () => clearInterval(intervalId);
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aptosClient]);
 
   useEffect(() => {
     setJackpotAmountReadable(jackpotAmount / 10 ** 8);
-    setMaxBet(jackpotAmount / 10);
-    setMaxBetReadable(jackpotAmount / 10 ** 8 / 10);
+    setMaxBet(Math.floor(jackpotAmount / 10));
   }, [jackpotAmount]);
+
+  useEffect(() => {
+    setMaxBetReadable(maxBet / 10 ** 8);
+  }, [maxBet]);
 
   useEffect(() => {
     setBetAmount(parseFloat(value) * 10 ** 8);
   }, [value]);
 
   useEffect(() => {
+    console.log(maxBetReadable);
     if (betAmount > maxBet) {
       setValue(maxBetReadable.toString());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [betAmount, maxBet]);
+
+  useEffect(() => {
+    console.log(lastWins);
+  }, [lastWins]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(parseNumericInput(e.target.value, 8));
@@ -113,7 +146,7 @@ function Bet() {
               <span className="number">
                 {(betAmount == 0 || isNaN(betAmount)) && <>-</>}
                 {betAmount != 0 && !isNaN(betAmount) && (
-                  <>{toLocaleString((betAmount / (jackpotAmount * 2)) * 100, 3)}</>
+                  <>{toLocaleString((betAmount / (jackpotAmount * 6)) * 100, 3)}</>
                 )}
               </span>
               %

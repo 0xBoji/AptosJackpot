@@ -77,7 +77,7 @@ module jackpot_address::jackpot {
         let payment = coin::withdraw<AptosCoin>(player, amount);
         coin::merge<AptosCoin>(&mut jackpot.value, payment);
 
-        if ((randomness::u64_integer() % jackpot_amount) * 2 < amount) {
+        if ((randomness::u64_integer() % jackpot_amount) * 6 < amount) {
             let coin_to_send = coin::extract<AptosCoin>(&mut jackpot.value, jackpot_amount + amount);
             coin::deposit<AptosCoin>(player_address, coin_to_send);
 
