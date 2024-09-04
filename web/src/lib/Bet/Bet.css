@@ -60,3 +60,7 @@ div.display > div:last-child {
 div.display > div:last-child p {
   text-align: right;
 }
+
+p.result {
+  margin-top: 1rem;
+}

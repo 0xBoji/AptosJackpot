@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import JackpotAmount from '../JackpotAmount/JackpotAmount';
 import './Bet.css';
 import createClient from '../web3/createClient';
-import { Aptos } from '@aptos-labs/ts-sdk';
+import { Aptos, InputGenerateTransactionPayloadData } from '@aptos-labs/ts-sdk';
 import getJackpotAmount from '../web3/getJackpotAmount';
 import parseNumericInput from '../scripts/parseNumericInput';
 import toLocaleString from '../scripts/toLocaleString';
 import { WalletSelector } from '@aptos-labs/wallet-adapter-ant-design';
 import '@aptos-labs/wallet-adapter-ant-design/dist/index.css';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { JACKPOT_OBJECT, MODULE_ADDRESS, MODULE_NAME } from '../web3/constants';
+import hasWon from '../scripts/hasWon';
 
 function Bet() {
   const [aptosClient, setAptosClient] = useState<Aptos>();
@@ -18,18 +20,21 @@ function Bet() {
   const [maxBetReadable, setMaxBetReadable] = useState(0);
   const [value, setValue] = useState('');
   const [betAmount, setBetAmount] = useState(0);
-  const { account } = useWallet();
+  const { account, signAndSubmitTransaction } = useWallet();
+  const [result, setResult] = useState<null | string>(null);
 
   useEffect(() => {
     setAptosClient(createClient());
   }, []);
 
+  const getJackpot = () => aptosClient && getJackpotAmount(aptosClient).then((amount) => setJackpotAmount(amount));
+
   useEffect(() => {
     if (aptosClient) {
-      getJackpotAmount(aptosClient).then((amount) => setJackpotAmount(amount));
+      getJackpot();
 
       const intervalId = setInterval(() => {
-        getJackpotAmount(aptosClient).then((amount) => setJackpotAmount(amount));
+        getJackpot();
       }, 5000);
 
       return () => clearInterval(intervalId);
@@ -53,12 +58,32 @@ function Bet() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [betAmount, maxBet]);
 
-  useEffect(() => {
-    console.log(account);
-  }, [account]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(parseNumericInput(e.target.value, 8));
+  };
+
+  const bet = async () => {
+    const transaction: InputGenerateTransactionPayloadData = {
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::play`,
+      functionArguments: [JACKPOT_OBJECT, betAmount],
+    };
+
+    try {
+      const response = await signAndSubmitTransaction({ data: transaction });
+      const result = await aptosClient?.waitForTransaction({ transactionHash: response.hash });
+      console.log(result);
+
+      if (result) {
+        getJackpot();
+        if (hasWon(result)) {
+          setResult('You have won!');
+        } else {
+          setResult('You have lost ):');
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -109,7 +134,9 @@ function Bet() {
         </div>
 
         {account === null && <WalletSelector />}
-        {account !== null && <button> Bet </button>}
+        {account !== null && <button onClick={bet}> Bet </button>}
+
+        {result !== null && <p className="result">{result}</p>}
       </div>
     </div>
   );
