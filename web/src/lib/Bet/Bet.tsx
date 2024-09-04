@@ -6,6 +6,9 @@ import { Aptos } from '@aptos-labs/ts-sdk';
 import getJackpotAmount from '../web3/getJackpotAmount';
 import parseNumericInput from '../scripts/parseNumericInput';
 import toLocaleString from '../scripts/toLocaleString';
+import { WalletSelector } from '@aptos-labs/wallet-adapter-ant-design';
+import '@aptos-labs/wallet-adapter-ant-design/dist/index.css';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
 
 function Bet() {
   const [aptosClient, setAptosClient] = useState<Aptos>();
@@ -15,6 +18,7 @@ function Bet() {
   const [maxBetReadable, setMaxBetReadable] = useState(0);
   const [value, setValue] = useState('');
   const [betAmount, setBetAmount] = useState(0);
+  const { account } = useWallet();
 
   useEffect(() => {
     setAptosClient(createClient());
@@ -46,7 +50,12 @@ function Bet() {
     if (betAmount > maxBet) {
       setValue(maxBetReadable.toString());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [betAmount, maxBet]);
+
+  useEffect(() => {
+    console.log(account);
+  }, [account]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(parseNumericInput(e.target.value, 8));
@@ -99,7 +108,8 @@ function Bet() {
           </div>
         </div>
 
-        <button> Bet </button>
+        {account === null && <WalletSelector />}
+        {account !== null && <button> Bet </button>}
       </div>
     </div>
   );
