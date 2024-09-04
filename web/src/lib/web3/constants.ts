@@ -1,0 +1,3 @@
+export const MODULE_ADDRESS = '0x49d5d79d9a574bacf343fe431d565fbb6ddc0eff2a494f72955409e7a5cd4a8a';
+export const MODULE_NAME = 'jackpot';
+export const JACKPOT_OBJECT = '0x48f2a57a091d75480083368647e76e5c7f41d609f0abe6a3149f714f6b996970';
