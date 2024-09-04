@@ -10,7 +10,7 @@ const wallets = [new PetraWallet()];
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AptosWalletAdapterProvider plugins={wallets} autoConnect={true} dappConfig={{ network: Network.DEVNET }}>
+    <AptosWalletAdapterProvider plugins={wallets} autoConnect={true} dappConfig={{ network: Network.MAINNET }}>
       <App />
     </AptosWalletAdapterProvider>
   </React.StrictMode>
