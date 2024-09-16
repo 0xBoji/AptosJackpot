@@ -23,6 +23,7 @@ With **AptosJackpot**, users can place bets on a growing jackpot, and the system
 - **Website:** The dApp is accessible at [aptosjackpot.com](https://aptosjackpot.com).
 - **Mainnet Deployment:** The contract is live on the Aptos mainnet.
   - **Module Address:** `0x042498bcaadd6d140d0c8e39c10185365fe4ac60a2499615ffa343e83babb05b`
+  - **Jackpot Object Address:** `0x16336ddbfa39e791a68702dea74fb0b4ec63d601d9582690581316eb2062c0e3`
 
 ## Project Structure
 The repository is structured as follows:
