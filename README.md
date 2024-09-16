@@ -1,6 +1,6 @@
 # AptosJackpot
 
-**AptosJackpot** is a decentralized application (dApp) built on the Aptos blockchain that offers a provably fair, transparent, and zero house edge jackpot system. The dApp leverages Aptos' randomness capabilities, fast transaction speeds, and secure ledger system to create a unique betting experience for users. 
+**AptosJackpot** is a decentralized application built on the Aptos blockchain that offers a provably fair, transparent, and zero house edge jackpot system. The dApp leverages Aptos' randomness capabilities, fast transaction speeds, and secure ledger system to create a unique betting experience for users. 
 
 With **AptosJackpot**, users can place bets on a growing jackpot, and the system ensures fairness by scaling win chances proportionally to the bet size. The smart contract is designed to keep the jackpot growing over time, making it an ongoing opportunity for all participants.
 
